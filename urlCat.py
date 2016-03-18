@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# Bianca I. Colon-Rosado	
+# bianca.colon1@upr.edu
 #
 # Python application that provide the 
 # URL category information for a given URL 
@@ -15,18 +17,16 @@
 import httplib
 import json
 import string
-from httplib import HTTPResponse
-
 
 # To get an anonymous authorization token
 conn = httplib.HTTPSConnection('api.xforce.ibmcloud.com:443')
 conn.request('GET', '/auth/anonymousToken')
 anonymousToken = conn.getresponse() # Return httplib.HTTPResponse instance
-t = anonymousToken.read()			# Make it able to operate
-t = t.replace('"','')				  # Eliminate the ""
-t = t.replace('}','')			  	# Eliminate the final }
-t = t.split(":")				     
-token = t[1]						      # Select just the token
+t = anonymousToken.read()   # Make it able to operate
+t = t.replace('"','')				# Eliminate the ""
+t = t.replace('}','')				# Eliminate the final }
+t = t.split(":")					
+token = t[1]						    # Select just the token
 conn.close()
 #print 'TOKEN '+token
 
@@ -34,18 +34,19 @@ conn.close()
 hToken = 'Bearer '+ token 			
 headers = {'Authorization': hToken}
 
-# Ask for URL and return categories
-url = raw_input('Enter url: ')
+# Ask for URL 
+url = raw_input('Enter url: ') 		# Request an URL
 urlConn = httplib.HTTPSConnection('api.xforce.ibmcloud.com')
 urlConn.request('GET', '/url/'+url, headers=headers)
-y = urlConn.getresponse()
-
-
-print y.read()
+resp = urlConn.getresponse()
+m = resp.read()						
 urlConn.close()
 
-
-
-
-
+# Return categories or error message
+m = json.loads(m)
+if ('error' in m):					# if can split by error it's because have an error
+	print m 						      # Display error message
+else:
+	print m['result']['cats'] # Display the categories
+	
 
