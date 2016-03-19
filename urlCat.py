@@ -18,10 +18,8 @@ try:	# To get an anonymous authorization token
 	anonymousToken = conn.getresponse() 	# Return httplib.HTTPResponse instance
 
 	t = anonymousToken.read()   		# Make it able to operate
-	t = t.replace('"','')			# Eliminate the ""
-	t = t.replace('}','')			# Eliminate the final }
-	t = t.split(":")					
-	token = t[1]				# Select just the token
+	t = json.loads(t) 			# Use the dict
+	token = t['token']			# Select just the token
 	conn.close() 				# Close connection
 	#print 'TOKEN '+token
 
